@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head><link href="/mediapage/estilo.css" rel="stylesheet" type="text/css" />
+    <title>Prueba</title></head>
+ <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjcqoXJ51BMwSN5DJCSUQ6xTABgV0ng9KzTACj2yFTzV1AylD2xQt3FNRNYNmfY4nLQZVi_mUvs_D1w"
+            type="text/javascript"></script>
+
+<script type="text/javascript" src="/mediapage/chrome.js"></script>
+<script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
+
+<script type="text/javascript">
+
+    //Referencias
+    var MisLugares = [{% for lugar in lista_lugares %}
+                        [{{lugar.longitud}},{{ lugar.latitud }},'{{ lugar.descripcion }}','{{ lugar.sitioWeb }}']
+                        {% if not forloop.last %},
+                        {% endif %}
+                    {% endfor %}];
+    //Variables globales  GULP!!
+    var MarksBusqueda =new Array();
+    var iNumReferencias=0;
+    var map;
+    var TiposMarker= { Referencias:0, Busquedas:1 };
+    
+    // block JQUERY 
+    function BusquedaAjax()
+    {
+        var parametro=$("#Search").attr("value");       
+        ajax={
+            type: "POST",
+            async:true,
+            dataType:"XML",
+            url:"/WebPrueba/BusquedaAjax/",
+            data:"Lugares="+parametro,
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la consulta")
+                    },            
+            success:ReciboDatos            
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false;
+    }
+    
+    function ReciboDatos(datos)
+    {
+        var Resultados=new Array();
+		var iObjetos=0;
+		var iCampos=0;
+        if(datos!="failure")
+        {
+			$("object",datos).each(function(Objetos)
+			{				
+				$("field",datos).each(function(Campos)
+			    { 					
+			        Resultados[iCampos] = $(this).text()//$("field",datos).attr("name");
+					iCampos=iCampos+1;
+				})
+				//iCampos=0;
+				iObjetos=iObjetos+1;
+			});
+			alert(datos);			
+			
+            //addResultados(Resultados);
+        }
+        else
+            alert("No existen datos para dicha consulta");
+    }
+    //end JQUERY
+    
+    function addResultados(Resultados)
+    {
+        /*var Resultados = [{% for lugar in resultados %}
+                            [{{lugar.longitud}},{{ lugar.latitud }},'{{ lugar.descripcion }}','{{ lugar.sitioWeb }}']
+                            {% if not forloop.last %},
+                            {% endif %}
+                        {% endfor %}];*/
+        alert("entra");
+        if (Resultados)
+        {            
+            iNumReferencias=0;
+            for (var i=0; i < Resultados.length; i++)
+            {
+                //if(ValidoArea(Resultados[i][0], Resultados[i][1]))
+                {
+                    
+                    addLugar(map,Resultados[i][0], Resultados[i][1], Resultados[i][2], Resultados[i][3],TiposMarker.Busquedas);
+                }
+            } 
+        }        
+    }
+    
+    function ValidoArea(lat, lng)
+    {
+        var bounds = map.getBounds();
+        var bRetorno=false;
+        var southWest = bounds.getSouthWest();
+        var northEast = bounds.getNorthEast();        
+        if(lat>=southWest.lat() && lat>=northEast.lat() &&
+           lng>=southWest.lng() && lng>=northEast.lng())
+        {
+            bRetorno=true;
+        }
+        return bRetorno;
+    }
+    
+    function addLugar(map, lat, lng, lugar, Web, tipo)
+    {
+        markerOptions="";
+        if (tipo==TiposMarker.Busquedas)
+        {
+            var greenIcon = new GIcon(G_DEFAULT_ICON);
+            greenIcon.image = "http://gmaps-samples.googlecode.com/svn/trunk/markers/green/blank.png";
+            markerOptions = { icon:greenIcon };
+        }
+        var markerpt = new GLatLng(lat, lng);
+        var marker = new GMarker(markerpt,markerOptions);        
+        var html = '<b>' + lugar + '</b><br>' + Web;
+        
+        if(tipo==TiposMarker.Busquedas)
+        {
+            MarksBusqueda[iNumReferencias]=marker;
+        }
+        
+        GEvent.addListener(marker, "click", function() { marker.openInfoWindowHtml(html); });
+        map.addOverlay(marker);        
+    }
+    
+    function limpiomarks(ArregloMarks)
+    {
+        for (var i=0; i < ArregloMarks.length; i++)
+        {            
+            map.removeOverlay(ArregloMarks[i]);
+        }
+    }
+        
+    function initialize()
+    {
+      if (GBrowserIsCompatible()) {
+        map = new GMap2(document.getElementById("map_canvas"));
+		map.addControl(new GSmallMapControl());
+		map.removeMapType(G_SATELLITE_MAP);
+		map.addControl(new GMapTypeControl());
+        map.setCenter(new GLatLng(24.8035, -107.3892), 13);
+        if (MisLugares) {
+            for (var i=0; i < MisLugares.length; i++)
+            {
+                addLugar(map,MisLugares[i][0], MisLugares[i][1], MisLugares[i][2], MisLugares[i][3],TiposMarker.Referencias);
+            }            
+        }        
+      }
+    }    
+    </script>
+<body onLoad="initialize()" onUnload="GUnload()">
+<div id="Header"></div>
+<div id="Logo"><img src = "/mediapage/images/Logo-trans.png"/ alt="Logo"/>  </div>
+<div id="MainMenu">
+	<div id="tab">
+		<ul>
+			<li class="item_active"><a href="#"><span>Inicio</span></a></li>
+			<li><a href="#"><span>Bienes raices</span></a></li>
+			<li><a href="#"><span>Contacto</span></a></li>
+			<li><a href="#"><span>Blog</span></a></li>
+		</ul>
+	</div>
+</div>
+<p>&nbsp;</p>
+
+<div id="map_canvas" >
+
+</div>
+<div id='bloques'>
+<div id='bloque'>
+<div class="top-left-corner">
+        <div class="top-left-inside">
+            &bull;
+        </div>
+    </div>
+    <div class="bottom-left-corner">
+        <div class="bottom-left-inside">
+            &bull;
+        </div>
+    </div>
+    <div class="top-right-corner">
+        <div class="top-right-inside">
+            &bull;
+        </div>
+    </div>
+        <div class="bottom-right-corner">
+            <div class="bottom-right-inside">
+                &bull;
+            </div>
+        </div>
+            <form action="/WebPrueba/" method="get">
+          <div class="Encabezado">
+        <label for="Lugares">Busqueda: </label>
+        <input id="Search" value="{{Lugares|escape}}" type="text" name="Lugares" class="txtBusqueda"/></div>
+          <br />
+          <input id="btnBuscar" type="submit" value="Buscar" class="btnBuscar" />          
+        </form>
+    </div>
+        
+ <div id="MisSitios">
+ <div class="top-left-corner">
+        <div class="top-left-inside">
+            &bull;
+        </div>
+    </div>
+    <div class="bottom-left-corner">
+        <div class="bottom-left-inside">
+            &bull;
+        </div>
+    </div>
+    <div class="top-right-corner">
+        <div class="top-right-inside">
+            &bull;
+        </div>
+    </div>
+    <div class="bottom-right-corner">
+        <div class="bottom-right-inside">
+            &bull;
+        </div>
+    </div>
+    Mis Sitios: <br><br>
+    
+    {% if Lugares %}        
+        {% if resultados %}           
+            <ul>
+                {% for x in resultados %}
+                    <li>{{ x|escape }}</l1>
+                {% endfor %}
+            </ul>
+        {% else %}
+            No hay datos para la busqueda: "{{ Lugares|escape }}"
+        {% endif %}
+    {% endif %}	
+    <button id="BuscarAjax" value="BuscarAjax" onclick="BusquedaAjax();" >Buscar Ajax</button>    
+    <button id="borrar"  value="Borrar"  onclick="limpiomarks(MarksBusqueda);">borrar</button>    
+ </div>   
+    </div>
+
+</body>
+</html>
