@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head><link href="/mediapage/estilo.css" rel="stylesheet" type="text/css" />
+    <title>Altas de negocio</title>
+    <link href="/mediapage/alta.css" rel="stylesheet" type="text/css">
+</head>
+ <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjcqoXJ51BMwSN5DJCSUQ6xTABgV0ng9KzTACj2yFTzV1AylD2xQt3FNRNYNmfY4nLQZVi_mUvs_D1w"
+            type="text/javascript"></script>
+
+<script type="text/javascript" src="/mediapage/chrome.js"></script>
+<script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
+
+<script type="text/javascript">
+    
+    //Referencias
+    var MisLugares = [{% for lugar in lista_lugares %}
+                        [{{lugar.longitud}},{{ lugar.latitud }},'{{ lugar.descripcion }}','{{ lugar.sitioWeb }}']
+                        {% if not forloop.last %},
+                        {% endif %}
+                    {% endfor %}];
+    //Variables globales  GULP!!
+    var TiposMarker= { Referencias:0, Busquedas:1 };
+
+    function addLugar(map, lat, lng, lugar, Web, tipo)
+    {
+        markerOptions="";
+        if (tipo==TiposMarker.Busquedas)
+        {
+            var greenIcon = new GIcon(G_DEFAULT_ICON);
+            greenIcon.image = "http://gmaps-samples.googlecode.com/svn/trunk/markers/green/blank.png";
+            markerOptions = { icon:greenIcon };
+        }
+        var markerpt = new GLatLng(lat, lng);
+        var marker = new GMarker(markerpt,markerOptions);        
+        var html = '<b>' + lugar + '</b><br>' + Web;
+            
+        GEvent.addListener(marker, "click", function() { marker.openInfoWindowHtml(html); });
+        map.addOverlay(marker);        
+    }
+    
+    function initialize()
+    {
+      if (GBrowserIsCompatible()) {
+	var centro=new GLatLng(24.8035, -107.3892);
+        map = new GMap2(document.getElementById("map_canvas"));
+		map.addControl(new GSmallMapControl());
+		map.removeMapType(G_SATELLITE_MAP);
+		map.addControl(new GMapTypeControl());
+        map.setCenter(centro, 13);
+        if (MisLugares) {
+            for (var i=0; i < MisLugares.length; i++)
+            {
+                addLugar(map,MisLugares[i][0], MisLugares[i][1], MisLugares[i][2], MisLugares[i][3],TiposMarker.Referencias);
+            }            
+        }
+	
+	//Marker arrastable	
+	var marker = new GMarker(centro, {draggable: true});
+
+        GEvent.addListener(marker, "dragstart", function() {
+          map.closeInfoWindow();
+        });
+
+	map.addOverlay(marker);
+
+      }
+    }    
+    </script>
+<body onLoad="initialize()" onUnload="GUnload()">
+<div id="Header"></div>
+<div id="Logo"><img src = "/mediapage/images/Logo-trans.png"/ alt="Logo"/>  </div>
+<div id="MainMenu">
+	<div id="tab">
+		<ul>
+			<li class="item_active"><a href="#"><span>Inicio</span></a></li>
+		  <li><a href="#"><span>Bienes raices</span></a></li>
+		  <li><a href="#"><span>Contacto</span></a></li>
+		  <li><a href="#"><span>Blog</span></a></li>
+	  </ul>
+	</div>
+</div>
+<p>&nbsp;</p>
+
+<div id="map_canvas" ></div>
+<br>
+<div id="Formulario"> 
+  <p>Descripcion del negocio:
+    <textarea cols="60" id="desc"></textarea>
+    </p>
+  <p>
+    <br>
+  Direccion</p>
+  <table width="664" >
+    <tr>
+      <td>Calle:</td>
+      <td><input id="calle"></td>
+      <td>Numero Exterior:</td>
+      <td><input id="numext"></td>
+    </tr>
+    <tr>
+      <td>Numero Interior:</td>
+      <td><input id="numint"></td>
+      <td>Colonia:</td>
+      <td><input id="colonia"></td>
+    </tr>
+    <tr>
+      <td>Piso:</td>
+      <td><input id="piso"></td>
+      <td>Andador:</td>
+      <td><input id="andador"></td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+  <table width="670" height="74" >
+    <tr>
+      <td>Web Site:</td>
+      <td><input id="web"></td>
+      <td>E-Mail:</td>
+      <td><input id="mail" value="@"></td>
+    </tr>
+    <tr>
+      <td>Telefono:</td>
+      <td><input id="telefono" maxlength="10"></td>
+      <td><button id="addphone">Insertar telefono</button></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><textarea name="telefonos" readonly="true" id="telefonos"></textarea></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+  <p><br>
+  </p>
+  <p><br>
+      </p>
+</div>
+</body>
+</html>
