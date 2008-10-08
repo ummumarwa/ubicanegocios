@@ -3,7 +3,7 @@ import wsgiref.handlers
 import os
 
 from google.appengine.ext import webapp
-from modelos import * #definir que tablas
+from modelos import lugares
 
 from google.appengine.ext.webapp import template
 
