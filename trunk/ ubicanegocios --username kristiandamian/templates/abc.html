@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head><link href="/mediapage/estilo.css" rel="stylesheet" type="text/css" />
+    <title>Altas, Bajas y Cambios</title>
+</head>
+<script type="text/javascript" src="/mediapage/chrome.js"></script>
+<script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
+
+<script type="text/javascript">    
+    function trim(cadena)
+    {
+	for(i=0; i<cadena.length; )
+	{
+		if(cadena.charAt(i)==" ")
+			cadena=cadena.substring(i+1, cadena.length);
+		else
+			break;
+	}
+
+	for(i=cadena.length-1; i>=0; i=cadena.length-1)
+	{
+		if(cadena.charAt(i)==" ")
+			cadena=cadena.substring(0,i);
+		else
+			break;
+	}	
+	return cadena;
+    }
+    
+    function AddDato(Dato)
+    {
+        var Dato=$("#desc").attr("value");
+        ajax={
+            type: "POST",
+            async:true,            
+            url:"/altaajax",
+            data:"tipoObjeto="+$("#objetos :selected").text()+"&Dato="+Dato,
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la alta de datos")
+                    },            
+            success: function()
+                    {                       
+                        var datos_select=$("#datos");
+                        datos_select.append(trim("<OPTION VALUE='"+Dato+"'>"+Dato));        
+                        $("#desc").attr("value",""); 
+                    }
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false;        
+      
+    }    
+    function BorroDato(Dato)
+    {        
+        var datos_select=$("#datos :selected");        
+        
+        var Dato=$("#datos :selected").text();
+        ajax={
+            type: "POST",
+            async:true,            
+            url:"/bajaajax",
+            data:"tipoObjeto="+$("#objetos :selected").text()+"&Dato="+Dato,
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la baja de datos")
+                    },            
+            success: function()
+                    {                       
+                        datos_select.remove(); 
+                    }
+        };
+        alert(ajax.data);
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false; 
+        
+        
+    }
+    
+    function ModificarDato(Dato)
+    {        
+        var datos_select=$("#datos :selected");
+        $("#desc").attr("value",datos_select.text()); 
+        datos_select.remove();
+    }
+    
+    function ValidoDatos(cadena)
+    {
+        var Objeto;
+        if(cadena=="Grabar")
+        {
+            Objeto=$("#desc");
+        }
+        else
+        {
+            Objeto=$("#datos");
+        }
+        if(trim(Objeto.attr("value")).length>0)
+        {
+            if(cadena=="Grabar")
+            {
+                AddDato(trim(Objeto.attr("value")));
+            }
+            else
+            {
+                if(cadena=="Borrar")
+                {
+                    BorroDato(trim(Objeto.attr("value")));
+                }
+                else
+                    ModificarDato();
+            }
+        }
+        else
+        {
+            alert("Seleccione un dato valido");
+            Objeto.focus();
+        }
+    }
+    </script>
+<body >
+<div id="Header"></div>
+<div id="Logo"><img src = "/mediapage/images/Logo-trans.png"/ alt="Logo"/>  </div>
+<div id="MainMenu">
+	<div id="tab">
+		<ul>
+			<li class="item_active"><a href="#"><span>Inicio</span></a></li>
+		  <li><a href="#"><span>Bienes raices</span></a></li>
+		  <li><a href="#"><span>Contacto</span></a></li>
+		  <li><a href="#"><span>Blog</span></a></li>
+	  </ul>
+	</div>
+</div>
+<p>&nbsp;</p>
+<div id="Formulario"> 
+<div id="tiposobjetos"  style="position:relative; left:65%">
+    Tipo de objetos : <select id="objetos" name="objetos">
+        <option value="idiomas">Idioma</option>
+        <option value="estados">Estados</option>
+        <option value="tipos_lugares">Tipos de lugares</option>
+    </select>
+</div>
+  <p>&nbsp;</p>
+  <table width="200" border="0">
+    <tr>
+      <td>Descripcion:</td>
+      <td><input name="desc" type="text" id="desc" value="" size="60"></td>
+      <td><button id="grabar" onClick="ValidoDatos('Grabar')" style="width:100px">Grabar</button></td>
+    </tr>
+  </table>
+	<br/>
+  <table width="200" border="0">
+    <tr>
+      <td rowspan="3"><select name="datos" readonly="true" id="datos" multiple size=10 style="width: 475px">      
+        {% if listaidiomas %}
+            {% for x in listaidiomas %}
+            <option value="{{ x.idioma|escape }}">{{ x.idioma|escape }}</option>
+            {% endfor %}
+        {% endif %}
+      </select></td>
+      <td><button id="Eliminar" style="width:100px" onClick="ValidoDatos('Borrar')">Eliminar</button></td>
+    </tr>
+    <tr>
+      <td><button id="Modificar" style="width:100px" onClick="ValidoDatos('Modificar')">Modificar</button></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+</div>
+</body>
+</html>
