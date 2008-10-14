@@ -3,7 +3,7 @@ import wsgiref.handlers
 
 from MainPage import MainPage
 from alta import alta
-from altaajax import altaajax, bajaajax
+from altaajax import altaajax, bajaajax, objAjax
 from abc import abc
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -15,11 +15,12 @@ application = webapp.WSGIApplication([
         ('/alta',alta),
         ('/altaajax',altaajax),
         ('/bajaajax',bajaajax),
+        ('/objAjax',objAjax),
         ('/abc',abc)],debug=True)
 
 
 def main():
-  run_wsgi_app(application)
+    run_wsgi_app(application)
 
 #si lo corro como funcion principal que hago? Creo una instancia de application
 if __name__ == '__main__':

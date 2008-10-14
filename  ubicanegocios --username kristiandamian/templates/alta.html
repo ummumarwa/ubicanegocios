@@ -4,12 +4,15 @@
     <title>Altas de negocio</title>
     <link href="/mediapage/alta.css" rel="stylesheet" type="text/css">
 </head>
- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjcqoXJ51BMwSN5DJCSUQ6xTABgV0ng9KzTACj2yFTzV1AylD2xQt3FNRNYNmfY4nLQZVi_mUvs_D1w"
+ <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjcqoXJ51BMwSN5DJCSUQ6xSYMEwC_lqkQJQkmYhhxQf-H4OPgxQPvIsx06Th16ADATkgP1wofE2w_g"
             type="text/javascript"></script>
 
 <script type="text/javascript" src="/mediapage/chrome.js"></script>
 <script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
 
+<link rel="stylesheet" href="http://dev.jquery.com/view/tags/ui/latest/themes/flora/flora.all.css" type="text/css" media="screen" title="Flora (Default)">
+<script type="text/javascript" src="http://dev.jquery.com/view/tags/ui/latest/ui/ui.core.js"></script>
+<script type="text/javascript" src="http://dev.jquery.com/view/tags/ui/latest/ui/ui.tabs.js"></script>
 <script type="text/javascript">
     
     //Referencias
@@ -94,6 +97,10 @@
         $("#telefono").attr("value","");
         
     }
+    
+    $(document).ready(function(){
+       $("#Formulario > ul").tabs(); 
+    });
     </script>
 <body onLoad="initialize()" onUnload="GUnload()">
 <div id="Header"></div>
@@ -112,58 +119,75 @@
 
 <div id="map_canvas" ></div>
 <br>
-<div id="Formulario"> 
-  <p>Descripcion del negocio:
-    <textarea cols="60" id="desc"></textarea>
-    </p>
-  <p>
-    <br>
-  Direccion</p>
-  <table width="664" >
-    <tr>
-      <td>Calle:</td>
-      <td><input id="calle"></td>
-      <td>Numero Exterior:</td>
-      <td><input id="numext"></td>
-    </tr>
-    <tr>
-      <td>Numero Interior:</td>
-      <td><input id="numint"></td>
-      <td>Colonia:</td>
-      <td><input id="colonia"></td>
-    </tr>
-    <tr>
-      <td>Piso:</td>
-      <td><input id="piso"></td>
-      <td>Andador:</td>
-      <td><input id="andador"></td>
-    </tr>
-  </table>
-  <p>&nbsp;</p>
-  <table width="670" height="74" >
-    <tr>
-      <td>Web Site:</td>
-      <td><input id="web"></td>
-      <td>E-Mail:</td>
-      <td><input id="mail" value="@"></td>
-    </tr>
-    <tr>
-      <td>Telefono:</td>
-      <td><input id="telefono" maxlength="10"></td>
-      <td><button id="addphone" onclick="AddPhone();">Insertar telefono</button></td>
-      <td>&nbsp;</td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-      <td><textarea name="telefonos" readonly="true" id="telefonos" rows="5"> </textarea></td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-    </tr>
-  </table>
-  <p><br>
-  </p>
-  <p><br>
-      </p>
+<div id="Formulario" class="flora">
+    <ul>
+        <li><a href="#descripcion"><span>Descripcion del negocio</span></a></li>
+        <li><a href="#direccion"><span>Direccion</span></a></li>
+        <li><a href="#contacto"><span>Datos de contacto</span></a></li>
+    </ul>
+    <div id="descripcion">
+        <table >
+            <tr>
+                <td>Nombre:</td>
+                <td><textarea cols="60" id="desc"></textarea></td>
+                <td>Tipo:</td>
+                <td>
+                    <select id="objetos" name="objetos">
+                        {% if tipos %}
+                            {% for x in tipos %}
+                                <option value="{{ x.tipo|escape }}">{{ x.tipo|escape }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    <div id="direccion">
+        <table width="664" >
+          <tr>
+            <td>Calle:</td>
+            <td><input id="calle"></td>
+            <td>Numero Exterior:</td>
+            <td><input id="numext"></td>
+          </tr>
+          <tr>
+            <td>Numero Interior:</td>
+            <td><input id="numint"></td>
+            <td>Colonia:</td>
+            <td><input id="colonia"></td>
+          </tr>
+          <tr>
+            <td>Piso:</td>
+            <td><input id="piso"></td>
+            <td>Andador:</td>
+            <td><input id="andador"></td>
+          </tr>
+        </table>  
+  </div>
+   <div id="contacto">
+        <table width="670" height="74" >
+          <tr>
+            <td>Web Site:</td>
+            <td><input id="web"></td>
+            <td>E-Mail:</td>
+            <td><input id="mail" value="@"></td>
+          </tr>
+          <tr>
+            <td>Telefono:</td>
+            <td><input id="telefono" maxlength="10"></td>
+            <td><button id="addphone" onclick="AddPhone();">Insertar telefono</button></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td><textarea name="telefonos" readonly="true" id="telefonos" rows="5"> </textarea></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          </table>
+    </div>
 </div>
 </body>
 </html>
