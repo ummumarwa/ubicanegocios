@@ -1,22 +1,22 @@
 from google.appengine.ext import db
 
 class estados (db.Model):    
-    estado=db.StringProperty(required=True)
+    estado=db.StringProperty()
     
 
 class idiomas (db.Model):
-    idioma=db.StringProperty(required=True)
+    idioma=db.StringProperty()
     
 class telefonos(db.Model):
-    telefono = db.StringProperty(required=True)
+    telefono = db.StringProperty()
 
     
 class usuarios(db.Model):    
-    usuario= db.StringProperty(required=True)
-    password = db.StringProperty(required=True)
-    nombre = db.StringProperty(required=True)
-    paterno = db.StringProperty(required=True)
-    materno = db.StringProperty(required=True)
+    usuario= db.StringProperty()
+    password = db.StringProperty()
+    nombre = db.StringProperty()
+    paterno = db.StringProperty()
+    materno = db.StringProperty()
     fecha_nacimiento=db.DateProperty()
     fecha_alta =db.DateProperty()
     sexo=db.StringProperty()
@@ -24,16 +24,16 @@ class usuarios(db.Model):
     respuesta_secreta = db.StringProperty()
 
 class ciudades (db.Model):
-    ciudad=db.StringProperty(required=True)
+    ciudad=db.StringProperty()
     estado=db.ReferenceProperty(estados)
        
 class descripciones (db.Model):
-    descripcion=db.StringProperty(required=True)
+    descripcion=db.StringProperty()
     idioma=db.ReferenceProperty(idiomas)  
 
 class empresas (db.Model):
-    nombre=db.StringProperty(required=True)
-    calle=db.StringProperty(required=True)
+    nombre=db.StringProperty()
+    calle=db.StringProperty()
     codigo_postal=db.IntegerProperty()
     numeroExterior=db.IntegerProperty()    
     numeroInterior=db.IntegerProperty()
@@ -49,7 +49,7 @@ class empresas (db.Model):
     telefonos=db.ReferenceProperty(telefonos)
     
 class tipos_lugares(db.Model):
-    tipo=db.StringProperty(required=True)
+    tipo=db.StringProperty()
     
     
 class lugares (db.Model):

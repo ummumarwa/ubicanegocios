@@ -69,11 +69,8 @@
                         datos_select.remove(); 
                     }
         };
-        alert(ajax.data);
         $.ajax(ajax);//llamo la funcion con JQUERY        
-        return false; 
-        
-        
+        return false;       
     }
     
     function ModificarDato(Dato)
@@ -116,6 +113,45 @@
             Objeto.focus();
         }
     }
+    function CargoObjetos()
+    {
+        var Dato=$("#objetos :selected").text();
+        ajax={
+            type: "POST",
+            async:true,
+            dataType:"JSON",
+            url:"/objAjax",
+            data:"tipoObjeto="+Dato,
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la consulta")
+                    },            
+            success:ReciboDatos            
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false
+    }
+    
+    function ReciboDatos(datos)
+    {
+        var Resultados=new Array();
+		var iObjetos=0;
+		var iCampos=0;
+        if(datos!="failure")
+        {                      
+            $("#datos").empty();
+            var datos_select=$("#datos");
+            //alert(datos);
+            var miObjeto = eval('(' + datos + ')');
+            
+            for (obj in miObjeto)
+            {
+                datos_select.append(trim("<OPTION VALUE='"+miObjeto[obj].Dato+"'>"+miObjeto[obj].Dato+"</OPTION>"));        
+            }
+        }
+        else
+            alert("No existen datos para dicha consulta");
+    }
     </script>
 <body >
 <div id="Header"></div>
@@ -133,7 +169,7 @@
 <p>&nbsp;</p>
 <div id="Formulario"> 
 <div id="tiposobjetos"  style="position:relative; left:65%">
-    Tipo de objetos : <select id="objetos" name="objetos">
+    Tipo de objetos : <select id="objetos" name="objetos" onchange="CargoObjetos()">
         <option value="idiomas">Idioma</option>
         <option value="estados">Estados</option>
         <option value="tipos_lugares">Tipos de lugares</option>
