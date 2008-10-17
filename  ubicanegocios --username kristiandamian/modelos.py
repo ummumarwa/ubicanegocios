@@ -1,16 +1,13 @@
 from google.appengine.ext import db
 
-class estados (db.Model):    
-    estado=db.StringProperty()
-    
 
 class idiomas (db.Model):
     idioma=db.StringProperty()
-    
-class telefonos(db.Model):
-    telefono = db.StringProperty()
 
-    
+class estados (db.Model):    
+    estado=db.StringProperty()
+    #ciudades=db.ListProperty(db.Key)
+
 class usuarios(db.Model):    
     usuario= db.StringProperty()
     password = db.StringProperty()
@@ -24,8 +21,7 @@ class usuarios(db.Model):
     respuesta_secreta = db.StringProperty()
 
 class ciudades (db.Model):
-    ciudad=db.StringProperty()
-    estado=db.ReferenceProperty(estados)
+    ciudad=db.StringProperty()    
        
 class descripciones (db.Model):
     descripcion=db.StringProperty()
@@ -46,7 +42,7 @@ class empresas (db.Model):
     nombreContacto = db.StringProperty()
     paternoContacto= db.StringProperty()
     maternoContacto= db.StringProperty()
-    telefonos=db.ReferenceProperty(telefonos)
+    telefonos=db.ListProperty(db.Key)
     
 class tipos_lugares(db.Model):
     tipo=db.StringProperty()
@@ -57,7 +53,7 @@ class lugares (db.Model):
     longitud = db.FloatProperty()
     latitud = db.FloatProperty()
     tipo = db.ReferenceProperty(tipos_lugares)
-    empresa = db.ReferenceProperty(empresas)
+    #empresa = db.ReferenceProperty(empresas) <- Se utilizara la propiedad "parent"
     calle = db.StringProperty()
     numero_exterior = db.IntegerProperty()
     numero_interior = db.IntegerProperty()
@@ -69,6 +65,8 @@ class lugares (db.Model):
     correo = db.EmailProperty()
     usuario=db.ReferenceProperty(usuarios)
     descripciones=db.ReferenceProperty(descripciones)
-    telefonos=db.ReferenceProperty(telefonos)
+    telefonos=db.ListProperty(db.Key)
 
+class telefonos(db.Model):
+    telefono = db.StringProperty()    
     

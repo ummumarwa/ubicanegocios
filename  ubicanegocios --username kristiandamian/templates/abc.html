@@ -6,6 +6,16 @@
 <script type="text/javascript" src="/mediapage/chrome.js"></script>
 <script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
 
+<link rel="stylesheet" href="/mediapage/flora.all.css" type="text/css" media="screen" title="Flora (Default)">
+<script type="text/javascript" src="/mediapage/ui.core.js"></script>
+<script type="text/javascript" src="/mediapage/ui.tabs.js"></script>
+
+<script type="text/javascript">
+// para google analitics
+/*var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+*/
+</script>
 <script type="text/javascript">    
     function trim(cadena)
     {
@@ -113,6 +123,87 @@
             Objeto.focus();
         }
     }
+    
+    function AddCD(Dato)
+    {
+        var Dato=$("#descCD").attr("value");        
+        ajax={
+            type: "POST",
+            async:true,            
+            url:"/altaajax",
+            data:"tipoObjeto=Ciudades&Dato="+Dato+"&Estado="+$("#objestados :selected").text(),
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la alta de datos")
+                    },            
+            success: function()
+                    {                       
+                        var datos_select=$("#Ciudades");
+                        datos_select.append(trim("<OPTION VALUE='"+Dato+"'>"+Dato));        
+                        $("#descCD").attr("value",""); 
+                    }
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false;        
+      
+    }    
+    function BorroCD(Dato)
+    {
+        var datos_select=$("#Ciudades :selected");        
+        
+        ajax={
+            type: "POST",
+            async:true,            
+            url:"/bajaajax",
+            data:"tipoObjeto=Ciudades&Dato="+Dato+"&Estado="+$("#objestados :selected").text(),
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la baja de ciudades")
+                    },            
+            success: function()
+                    {                       
+                        datos_select.remove(); 
+                    }
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false;       
+    }
+    
+    function ValidoCiudades(cadena)
+    {
+        var Objeto;
+        if(cadena=="Grabar")
+        {
+            Objeto=$("#descCD");
+        }
+        else
+        {
+            Objeto=$("#Ciudades");
+        }
+        if(trim(Objeto.attr("value")).length>0)
+        {
+            if(cadena=="Grabar")
+            {
+                AddCD(trim(Objeto.attr("value")));
+            }
+            else
+            {
+                if(cadena=="Borrar")
+                {
+                    BorroCD(trim(Objeto.attr("value")));
+                }
+                else
+                {
+                    //ModificarDato();
+                }
+            }
+        }
+        else
+        {
+            alert("Seleccione un dato valido");
+            Objeto.focus();
+        }
+    }
     function CargoObjetos()
     {
         var Dato=$("#objetos :selected").text();
@@ -152,6 +243,48 @@
         else
             alert("No existen datos para dicha consulta");
     }
+    function CargoCiudades()
+    {
+        var Dato=$("#objestados :selected").text();
+        ajax={
+            type: "POST",
+            async:true,
+            dataType:"JSON",
+            url:"/objAjax",
+            data:"tipoObjeto=Ciudades&Estado="+Dato,
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la consulta")
+                    },            
+            success:ReciboCiudades           
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false
+    }
+    function ReciboCiudades(datos)
+    {
+        var Resultados=new Array();
+		var iObjetos=0;
+		var iCampos=0;        
+        if(datos!="failure")
+        {                      
+            $("#Ciudades").empty();
+            var datos_select=$("#Ciudades");
+            //alert(datos);
+            var miObjeto = eval('(' + datos + ')');
+            
+            for (obj in miObjeto)
+            {
+                datos_select.append(trim("<OPTION VALUE='"+miObjeto[obj].Dato+"'>"+miObjeto[obj].Dato+"</OPTION>"));        
+            }
+        }
+        else
+            alert("No existen datos para dicha consulta");
+    }
+    
+    $(document).ready(function(){
+       $("#Formulario > ul").tabs(); 
+    });
     </script>
 <body >
 <div id="Header"></div>
@@ -167,42 +300,83 @@
 	</div>
 </div>
 <p>&nbsp;</p>
-<div id="Formulario"> 
-<div id="tiposobjetos"  style="position:relative; left:65%">
-    Tipo de objetos : <select id="objetos" name="objetos" onchange="CargoObjetos()">
-        <option value="idiomas">Idioma</option>
-        <option value="estados">Estados</option>
-        <option value="tipos_lugares">Tipos de lugares</option>
-    </select>
-</div>
-  <p>&nbsp;</p>
-  <table width="200" border="0">
-    <tr>
-      <td>Descripcion:</td>
-      <td><input name="desc" type="text" id="desc" value="" size="60"></td>
-      <td><button id="grabar" onClick="ValidoDatos('Grabar')" style="width:100px">Grabar</button></td>
-    </tr>
-  </table>
-	<br/>
-  <table width="200" border="0">
-    <tr>
-      <td rowspan="3"><select name="datos" readonly="true" id="datos" multiple size=10 style="width: 475px">      
-        {% if listaidiomas %}
-            {% for x in listaidiomas %}
-            <option value="{{ x.idioma|escape }}">{{ x.idioma|escape }}</option>
-            {% endfor %}
-        {% endif %}
-      </select></td>
-      <td><button id="Eliminar" style="width:100px" onClick="ValidoDatos('Borrar')">Eliminar</button></td>
-    </tr>
-    <tr>
-      <td><button id="Modificar" style="width:100px" onClick="ValidoDatos('Modificar')">Modificar</button></td>
-    </tr>
-    <tr>
-      <td>&nbsp;</td>
-    </tr>
-  </table>
-  <p>&nbsp;</p>
+<div id="Formulario" class="flora">
+    <ul>
+        <li><a href="#objetos"><span>Idiomas, Estados y Tipos</span></a></li>
+        <li><a href="#ciudades"><span>Ciudades</span></a></li>
+    </ul>
+    <div id="objetos">
+        <div id="tiposobjetos"  style="position:relative; left:65%">
+            Tipo de objetos : <select id="objetos" name="objetos" onchange="CargoObjetos()">
+                <option value="idiomas">Idioma</option>
+                <option value="estados">Estados</option>
+                <option value="tipos_lugares">Tipos de lugares</option>
+            </select>
+        </div>
+        <p>&nbsp;</p>
+        <table width="200" border="0">
+          <tr>
+            <td>Descripcion:</td>
+            <td><input name="desc" type="text" id="desc" value="" size="60"></td>
+            <td><button id="grabar" onClick="ValidoDatos('Grabar')" style="width:100px">Grabar</button></td>
+          </tr>
+        </table>
+              <br/>
+        <table width="200" border="0">
+          <tr>
+            <td rowspan="3"><select name="datos" readonly="true" id="datos" multiple size=10 style="width: 475px">      
+              {% if listaidiomas %}
+                  {% for x in listaidiomas %}
+                  <option value="{{ x.idioma|escape }}">{{ x.idioma|escape }}</option>
+                  {% endfor %}
+              {% endif %}
+            </select></td>
+            <td><button id="Eliminar" style="width:100px" onClick="ValidoDatos('Borrar')">Eliminar</button></td>
+          </tr>
+          <tr>
+            <td><button id="Modificar" style="width:100px" onClick="ValidoDatos('Modificar')">Modificar</button></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+        <p>&nbsp;</p>
+    </div>
+    <div id="ciudades">
+        <div id="objestados"  style="position:relative; left:65%">
+            Estados : <select id="estados" name="estados" onchange="CargoCiudades()">
+            {% if listaestados %}
+                {% for x in listaestados %}
+                <option value="{{ x.estado|escape }}">{{ x.estado|escape }}</option>
+                {% endfor %}
+            {% endif %}           
+        </select>
+        </div>
+        <p>&nbsp;</p>
+        <table width="200" border="0">
+        <tr>
+          <td>Ciudad: </td>
+          <td><input name="descCD" type="text" id="descCD" value="" size="60"></td>
+          <td><button id="grabar" onClick="ValidoCiudades('Grabar')" style="width:100px">Grabar</button></td>
+        </tr>
+        </table>
+            <br/>
+        <table width="200" border="0">
+        <tr>
+          <td rowspan="3"><select name="Ciudades" readonly="true" id="Ciudades" multiple size=10 style="width: 475px">
+
+          </select></td>
+          <td><button id="EliminarCd" style="width:100px" onClick="ValidoCiudades('Borrar')">Eliminar</button></td>
+        </tr>
+        <tr>
+          <td><button id="ModificarCd" style='width:100px' ">Modificar</button></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+      <p>&nbsp;</p>
+    </div>
 </div>
 </body>
 </html>
