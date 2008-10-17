@@ -1,24 +1,14 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head><link href="/mediapage/estilo.css" rel="stylesheet" type="text/css" />
-    <title>Altas de negocio</title>
+{% extends "base.html" %}
+{% block Titulo %}Altas de negocio{% endblock %}
+ {% block content %}
     <link href="/mediapage/alta.css" rel="stylesheet" type="text/css">
-</head>
+
  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjcqoXJ51BMwSN5DJCSUQ6xSYMEwC_lqkQJQkmYhhxQf-H4OPgxQPvIsx06Th16ADATkgP1wofE2w_g"
             type="text/javascript"></script>
-
-<script type="text/javascript" src="/mediapage/chrome.js"></script>
-<script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
 
 <link rel="stylesheet" href="/mediapage/flora.all.css" type="text/css" media="screen" title="Flora (Default)">
 <script type="text/javascript" src="/mediapage/ui.core.js"></script>
 <script type="text/javascript" src="/mediapage/ui.tabs.js"></script>
-<script type="text/javascript">
-// para google analitics
-/*var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-*/
-</script>
 <script type="text/javascript">
     
     //Referencias
@@ -109,19 +99,6 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
     });
     </script>
 <body onLoad="initialize()" onUnload="GUnload()">
-<div id="Header"></div>
-<div id="Logo"><img src = "/mediapage/images/Logo-trans.png"/ alt="Logo"/>  </div>
-<div id="MainMenu">
-	<div id="tab">
-		<ul>
-			<li class="item_active"><a href="#"><span>Inicio</span></a></li>
-		  <li><a href="#"><span>Bienes raices</span></a></li>
-		  <li><a href="#"><span>Contacto</span></a></li>
-		  <li><a href="#"><span>Blog</span></a></li>
-	  </ul>
-	</div>
-</div>
-<p>&nbsp;</p>
 
 <div id="map_canvas" ></div>
 <br>
@@ -196,4 +173,4 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
     </div>
 </div>
 </body>
-</html>
+{% endblock %}

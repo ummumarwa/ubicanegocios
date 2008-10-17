@@ -1,21 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head><link href="/mediapage/estilo.css" rel="stylesheet" type="text/css" />
-    <title>Altas, Bajas y Cambios</title>
-</head>
-<script type="text/javascript" src="/mediapage/chrome.js"></script>
-<script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
-
+{% extends "base.html" %}
+{% block Titulo %}Altas, bajas y cambios{% endblock %}
+{% block content %}
 <link rel="stylesheet" href="/mediapage/flora.all.css" type="text/css" media="screen" title="Flora (Default)">
 <script type="text/javascript" src="/mediapage/ui.core.js"></script>
 <script type="text/javascript" src="/mediapage/ui.tabs.js"></script>
 
-<script type="text/javascript">
-// para google analitics
-/*var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-*/
-</script>
+
 <script type="text/javascript">    
     function trim(cadena)
     {
@@ -286,20 +276,6 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
        $("#Formulario > ul").tabs(); 
     });
     </script>
-<body >
-<div id="Header"></div>
-<div id="Logo"><img src = "/mediapage/images/Logo-trans.png"/ alt="Logo"/>  </div>
-<div id="MainMenu">
-	<div id="tab">
-		<ul>
-			<li class="item_active"><a href="#"><span>Inicio</span></a></li>
-		  <li><a href="#"><span>Bienes raices</span></a></li>
-		  <li><a href="#"><span>Contacto</span></a></li>
-		  <li><a href="#"><span>Blog</span></a></li>
-	  </ul>
-	</div>
-</div>
-<p>&nbsp;</p>
 <div id="Formulario" class="flora">
     <ul>
         <li><a href="#objetossimples"><span>Idiomas, Estados y Tipos</span></a></li>
@@ -377,6 +353,5 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
       </table>
       <p>&nbsp;</p>
     </div>
-</div>
-</body>
-</html>
+	</div>
+{% endblock %}

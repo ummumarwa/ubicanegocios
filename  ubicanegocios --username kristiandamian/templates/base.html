@@ -1,11 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml" >
-<head><link href="estilo.css" rel="stylesheet" type="text/css" />
-    <title>Pagina Base</title></head>
-<script type="text/javascript" src="chrome.js"></script>
+<head><link href="/mediapage/estilo.css" rel="stylesheet" type="text/css" />
+    <title>{% block Titulo %}Pagina Base{% endblock %}</title></head>
+<script type="text/javascript" src="/mediapage/chrome.js"></script>
+<script type="text/javascript" src="/mediapage/jquery-1.2.6.js"></script>
+<script type="text/javascript">
+// para google analitics
+/*var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+*/
+</script>
 <body >
 <div id="Header"></div>
-<div id="Logo"><img src="images/Logo-trans.png"/>  </div>
+<div id="Logo"><img src="/mediapage/images/Logo-trans.png"/>  </div>
 <div id="MainMenu">
 	<div id="tab">
 		<ul>
@@ -17,7 +24,6 @@
 	</div>
 </div>
 <p>&nbsp;</p>
-
-
+{% block content %}{% endblock %}
 </body>
 </html>
