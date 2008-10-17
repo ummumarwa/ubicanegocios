@@ -10,6 +10,6 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-# Used 46 times in query history.
+# Used 50 times in query history.
 - kind: ciudades
   ancestor: yes

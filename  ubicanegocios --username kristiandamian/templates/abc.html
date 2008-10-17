@@ -64,7 +64,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
     {        
         var datos_select=$("#datos :selected");        
         
-        var Dato=$("#datos :selected").text();
+        alert($("#objetos :selected").text());        
         ajax={
             type: "POST",
             async:true,            
@@ -302,10 +302,10 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 <p>&nbsp;</p>
 <div id="Formulario" class="flora">
     <ul>
-        <li><a href="#objetos"><span>Idiomas, Estados y Tipos</span></a></li>
+        <li><a href="#objetossimples"><span>Idiomas, Estados y Tipos</span></a></li>
         <li><a href="#ciudades"><span>Ciudades</span></a></li>
     </ul>
-    <div id="objetos">
+    <div id="objetossimples">
         <div id="tiposobjetos"  style="position:relative; left:65%">
             Tipo de objetos : <select id="objetos" name="objetos" onchange="CargoObjetos()">
                 <option value="idiomas">Idioma</option>
