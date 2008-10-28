@@ -182,7 +182,7 @@ pageTracker._trackPageview();
         <label for="Lugares">Busqueda: </label>
         <input id="Search" value="{{Lugares|escape}}" type="text" name="Lugares" class="txtBusqueda"/></div>
           <br />
-          <input id="btnBuscar" type="submit" value="Buscar" class="btnBuscar" />          
+          <input  disabled="disabled" id="btnBuscar" type="submit" value="Buscar" class="btnBuscar" />          
         </form>
     </div>
         
@@ -220,8 +220,8 @@ pageTracker._trackPageview();
             No hay datos para la busqueda: "{{ Lugares|escape }}"
         {% endif %}
     {% endif %}	
-    <button id="BuscarAjax" value="BuscarAjax" onclick="BusquedaAjax();" >Buscar Ajax</button>    
-    <button id="borrar"  value="Borrar"  onclick="limpiomarks(MarksBusqueda);">borrar</button>    
+    <button  disabled="disabled" id="BuscarAjax" value="BuscarAjax" onclick="BusquedaAjax();" >Buscar Ajax</button>    
+    <button disabled="disabled" id="borrar"  value="Borrar"  onclick="limpiomarks(MarksBusqueda);">borrar</button>    
  </div>   
     </div>
 {% endblock %}

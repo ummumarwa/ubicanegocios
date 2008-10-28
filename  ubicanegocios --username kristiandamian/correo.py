@@ -32,7 +32,7 @@ class envioCorreoConfirmacion(webapp.RequestHandler):
         
         textoCorreo+="Saludos."
         
-        mail.send_mail(sender="dcastrok@gmail.com",
+        mail.send_mail(sender="kristiandamian@gmail.com",
               to=correo,
               subject="Su cuenta de ubicanegocios.com",
               body=textoCorreo)
