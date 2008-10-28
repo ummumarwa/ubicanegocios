@@ -2,11 +2,14 @@ import cgi
 import wsgiref.handlers
 
 from MainPage import MainPage
+from correo import envioCorreoConfirmacion, ValidaCuenta
 from alta import alta
 from altaajax import altaajax, bajaajax, objAjax
 from abc import abc
+from login import pantallalogin
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+
 
 
 #Defino  la pantalla principal dentro de la clase MainPage
@@ -16,6 +19,9 @@ application = webapp.WSGIApplication([
         ('/altaajax',altaajax),
         ('/bajaajax',bajaajax),
         ('/objAjax',objAjax),
+        ('/login',pantallalogin),        
+        ('/enviocorreo',envioCorreoConfirmacion),
+        ('/validacuenta/(.*)',ValidaCuenta),
         ('/abc',abc)],debug=True)
 
 
