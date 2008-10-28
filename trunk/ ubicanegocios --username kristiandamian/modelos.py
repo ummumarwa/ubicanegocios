@@ -68,5 +68,9 @@ class lugares (db.Model):
     telefonos=db.ListProperty(db.Key)
 
 class telefonos(db.Model):
-    telefono = db.StringProperty()    
+    telefono = db.StringProperty()
+
+class usuarios(db.Model):
+    correo=db.StringProperty()
+    validado=db.BooleanProperty()
     
