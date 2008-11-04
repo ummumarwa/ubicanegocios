@@ -41,7 +41,7 @@ class empresas (db.Model):
     id_Ciudad=db.ReferenceProperty(ciudades)
     piso=db.IntegerProperty()
     andador=db.StringProperty()
-    sitioweb=db.LinkProperty()
+    sitioweb=db.StringProperty()
     correo=db.EmailProperty()
     nombreContacto = db.StringProperty()
     paternoContacto= db.StringProperty()

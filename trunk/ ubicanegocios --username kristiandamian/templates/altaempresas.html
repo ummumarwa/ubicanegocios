@@ -7,6 +7,158 @@
 <script type="text/javascript" src="/mediapage/ui.core.js"></script>
 <script type="text/javascript" src="/mediapage/ui.tabs.js"></script>
 <script type="text/javascript">
+    function ValidoCorreos(correo)
+    {
+	var Dato=correo.attr("value");	
+	var filter=/^[A-Za-z][A-Za-z0-9_]*@[A-Za-z0-9_]+\.[A-Za-z0-9_.]+[A-za-z]$/;
+	var correcto=false;        
+	if(Dato.length>0)
+	{
+	    if(filter.test(Dato))
+	    {
+		correcto=true;
+	    }
+	}
+        if(!correcto)
+        {
+            mensaje="Lo siento, capture un correo valido";
+            alert(mensaje);
+            correo.focus();
+            correo.css("background-color", "red");
+        }
+        else
+            correo.css("background-color", "white");
+        return correcto
+    }
+    function validoCampo(dato,bInt)
+    {
+        var bRetorno=true;
+        if(trim(dato).length<=0)
+            bRetorno=false;        
+        if(bInt)
+            if(isNaN(parseInt(dato)))
+                bRetorno=false;
+        return bRetorno;
+    }
+    
+    function ValidoElemento(jqElemento, bInt,bError)
+    {
+        bRetorno=true;
+        if(!validoCampo(jqElemento.attr("value"),bInt))        
+        {
+            bRetorno=false;     
+            iErrores++;
+            jqElemento.css("background-color", "red");
+        }
+        else
+        {
+            jqElemento.css("background-color", "white");
+        }
+        return bRetorno;
+    }    
+    
+    function GraboDatos()
+    {        
+        ajax={
+            type: "POST",
+            async:true,
+            dataType:"JSON",
+            url:"/graboempresa",
+            data:"desc="+$("#desc").attr("value") +
+                 "&calle="+$("#calle").attr("value") +
+                 "&numext="+$("#numext").attr("value") +
+                 "&numint="+$("#numint").attr("value") +
+                 "&colonia="+$("#colonia").attr("value") +
+                 "&piso="+$("#piso").attr("value") +
+                 "&andador="+$("#andador").attr("value") +
+                 "&cp="+$("#cp").attr("value") +
+                 "&web="+$("#web").attr("value") +
+                 "&mail="+$("#mail").attr("value") + 
+                 "&ciudad="+$("#ciudad :selected").text(),
+                 
+            error: function ()
+                    {
+                        alert("Ocurrio un error con la alta de la empresa: "+$("#desc").attr("value"))
+                    },            
+            success: graboTelefonos
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false;   
+    }
+    function LimpioDatos()
+    {
+        $("#desc").attr("value")="";
+        $("#calle").attr("value") ="";
+        $("#numext").attr("value") ="";
+        $("#numint").attr("value") ="";
+        $("#colonia").attr("value") ="";
+        $("#piso").attr("value") ="";
+        $("#andador").attr("value") ="";
+        $("#cp").attr("value") ="";
+        $("#web").attr("value") ="";
+        $("#mail").attr("value")="";
+    }
+    function graboTelefonos(Datos)
+    {
+
+        var miObjeto = eval('(' + Datos + ')');        
+        for (obj in miObjeto)
+        {
+            
+            $("#telefonos option").each(function(i){
+                 ajax={
+            type: "POST",
+            async:true,
+            dataType:"JSON",
+            url:"/graboTel",
+            data:"telefono="+$(this).text() +
+                 "&id="+miObjeto[obj].Dato,                 
+                error: function ()
+                        {
+                            alert("Ocurrio un error con la alta del telefono: "+$(this).text())
+                        },            
+                success: function(){
+                        var datos_select=$("#Mensaje");
+                        datos_select.html("<br><br>Datos grabados con exito<br>Ahora puede dar de alta sus empresas en el mapa");
+                        LimpioDatos();
+                }
+                
+            };
+            $.ajax(ajax);//llamo la funcion con JQUERY  
+                
+                 
+            });
+
+        }
+      
+    }
+    
+    var iErrores;
+    function validoDatos()
+    {        
+        iErrores=0;        
+        ValidoElemento($("#desc"),false);   //nombre     
+        ValidoElemento($("#calle"),false);
+        ValidoElemento($("#numext"),true);
+        ValidoElemento($("#colonia"),false);
+        ValidoElemento($("#cp"),true);
+        ValidoElemento($("#mail"),false);
+        if(($("#piso").attr("value")).length>0)
+        {
+            ValidoElemento($("#piso"),true)
+        }
+        if(iErrores>0)
+        {
+            mensaje="Lo siento, hay campos obligatorios que faltan de capturar o que se encuentran en formato incorrecto";
+            alert(mensaje);
+        }
+        else
+            if(ValidoCorreos($("#mail")))
+            {                
+                GraboDatos();
+            }
+    }
+    
     function trim(cadena)
     {
 	for(i=0; i<cadena.length; )
@@ -28,10 +180,11 @@
     }
     
     function AddPhone()
-    {        
-        var lista=trim($("#telefonos").attr("value")+$("#telefono").attr("value")+"\n");
-        $("#telefonos").attr("value",lista);        
-        $("#telefono").attr("value","");        
+    {
+        datos_select=$("#telefonos");
+        Dato=$("#telefono").attr("value");        
+        datos_select.append(trim("<option VALUE='"+Dato+"'>"+Dato+"</option>"));        
+        $("#telefono").attr("value","");
     }
     
     $(document).ready(function(){
@@ -41,6 +194,7 @@
 <div id="Usuario">
     {% if correo %}
         {{ correo|escape }}
+
     {% else %}
         <script type="text/javascript">
             window.location="/"
@@ -88,10 +242,10 @@
           </tr>
           <tr>
             <td>Codigo Postal:</td>
-            <td><input id="telefono" maxlength="5"></td>
+            <td><input id="cp" maxlength="5"></td>
             <td>Ciudad:</td>
             <td>
-                <select name="datos" readonly="true" id="datos" > 
+                <select name="ciudad" readonly="true" id="datos" > 
                     {% if listaciudades %}
                       {% for x in listaciudades %}
                         <option value="{{ x.ciudad|escape }}">{{ x.ciudad|escape }}</option>
@@ -108,7 +262,7 @@
             <td>Web Site:</td>
             <td><input id="web"></td>
             <td>E-Mail:</td>
-            <td><input id="mail" value="@"></td>
+            <td><input id="mail" value="{{ correo|escape }}"></td>
           </tr>
           <tr>
             <td>Telefono:</td>
@@ -118,7 +272,7 @@
           </tr>
           <tr>
             <td>&nbsp;</td>
-            <td><textarea name="telefonos" readonly="readonly" id="telefonos" rows="5" style="background-color:#FFFFFF"> </textarea></td>
+            <td><select name="telefonos" readonly="readonly" id="telefonos" multiple size=5 style="background-color:#FFFFFF; width: 175px"> </select></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
@@ -127,7 +281,9 @@
 </div>
 
 <div id="botongrabar" style="text-align:center">
-<button id="grabar"  onclick="alert('lo siento, funcionalidad aun no implementada');">Grabar</button>
+<button id="grabar"  onclick="validoDatos()">Grabar</button>
 <button id="cancelar" onclick="window.location='/'">Cancelar</button>
+</div>
+<div id="Mensaje">
 </div>
 {% endblock %}
