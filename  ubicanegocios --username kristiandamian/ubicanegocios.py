@@ -5,7 +5,7 @@ from MainPage import MainPage
 from correo import envioCorreoConfirmacion, ValidaCuenta, ValidaLogin
 from alta import alta
 from altaajax import altaajax, bajaajax, objAjax
-from altaempresas import pantallaAltaEmpresas
+from altaempresas import pantallaAltaEmpresas, GraboEmpresas, GraboTel
 from abc import abc
 from login import pantallalogin
 from google.appengine.ext import webapp
@@ -24,6 +24,8 @@ application = webapp.WSGIApplication([
         ('/enviocorreo',envioCorreoConfirmacion),
         ('/validologin',ValidaLogin),
         ('/altaempresas/(.*)',pantallaAltaEmpresas),
+        ('/graboempresa',GraboEmpresas),
+        ('/graboTel',GraboTel),
         ('/validacuenta/(.*)',ValidaCuenta),
         ('/abc',abc)],debug=True)
 
