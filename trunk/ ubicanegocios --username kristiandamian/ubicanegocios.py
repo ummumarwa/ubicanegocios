@@ -2,9 +2,10 @@ import cgi
 import wsgiref.handlers
 
 from MainPage import MainPage
-from correo import envioCorreoConfirmacion, ValidaCuenta
+from correo import envioCorreoConfirmacion, ValidaCuenta, ValidaLogin
 from alta import alta
 from altaajax import altaajax, bajaajax, objAjax
+from altaempresas import pantallaAltaEmpresas
 from abc import abc
 from login import pantallalogin
 from google.appengine.ext import webapp
@@ -21,6 +22,8 @@ application = webapp.WSGIApplication([
         ('/objAjax',objAjax),
         ('/login',pantallalogin),        
         ('/enviocorreo',envioCorreoConfirmacion),
+        ('/validologin',ValidaLogin),
+        ('/altaempresas/(.*)',pantallaAltaEmpresas),
         ('/validacuenta/(.*)',ValidaCuenta),
         ('/abc',abc)],debug=True)
 

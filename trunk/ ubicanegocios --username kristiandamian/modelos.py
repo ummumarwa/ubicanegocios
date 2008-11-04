@@ -27,6 +27,10 @@ class descripciones (db.Model):
     descripcion=db.StringProperty()
     idioma=db.ReferenceProperty(idiomas)  
 
+class usuarios(db.Model):
+    correo=db.StringProperty()
+    validado=db.BooleanProperty()
+    
 class empresas (db.Model):
     nombre=db.StringProperty()
     calle=db.StringProperty()
@@ -43,6 +47,7 @@ class empresas (db.Model):
     paternoContacto= db.StringProperty()
     maternoContacto= db.StringProperty()
     telefonos=db.ListProperty(db.Key)
+    usuario=db.ReferenceProperty(usuarios)
     
 class tipos_lugares(db.Model):
     tipo=db.StringProperty()
@@ -70,7 +75,4 @@ class lugares (db.Model):
 class telefonos(db.Model):
     telefono = db.StringProperty()
 
-class usuarios(db.Model):
-    correo=db.StringProperty()
-    validado=db.BooleanProperty()
     

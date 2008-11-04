@@ -2,11 +2,20 @@
 {% block Titulo %}login de ubicanegocio{% endblock %}
 {% block content %}
 <script type="text/javascript">
-    function ValidoCorreos()
+    function ValidoCorreos(tipo)
     {
-	var Dato=$("#correo").attr("value");	
+        var campo;
+        if(tipo=="alta")
+        {
+            campo=$("#correo");            
+        }
+        else
+        {
+            campo=$("#usuario");            
+        }
+	var Dato=campo.attr("value");	
 	var filter=/^[A-Za-z][A-Za-z0-9_]*@[A-Za-z0-9_]+\.[A-Za-z0-9_.]+[A-za-z]$/;
-	var correcto=false;
+	var correcto=false;        
 	if(Dato.length>0)
 	{
 	    if(filter.test(Dato))
@@ -17,29 +26,65 @@
 	if(!correcto)
 	{
 	    alert("Ingrese una direccion de correo valida");
-	    $("#correo").focus();
+	    campo.focus();
 	}
 	else
 	{
-	    envioCorreo();
+            if(tipo=="alta")
+            {
+                envioCorreo();            
+            }
+            else
+            {
+                intentologin()
+            }
 	}
+    }
+    function intentologin()
+    {
+        var Dato=$("#usuario").attr("value");
+        ajax={
+            type: "POST",            
+            async:true,
+            dataType:"JSON",
+            url:"/validologin",
+            data:"correo="+Dato,
+            error: function ()
+                    {
+                        alert("Ocurrio un error con el ingreso al sistema")
+                    },            
+            success: Mensaje
+        };
+        $.ajax(ajax);//llamo la funcion con JQUERY        
+        return false;     
+    }
+    function Mensaje(Datos)
+    {
+        var miObjeto = eval('(' + Datos + ')');        
+        for (obj in miObjeto)
+        {            
+            $("#confirmacion").html("<br><br>"+miObjeto[obj].Dato);
+            if(miObjeto[obj].Dato=="Login exitoso")
+            {
+                var Dato=$("#usuario").attr("value");
+                window.location="./altaempresas/?correo="+Dato
+            }
+        }
     }
     function envioCorreo()
     {
         var Dato=$("#correo").attr("value");
         ajax={
             type: "POST",
-            async:true,            
+            async:true,
+            dataType:"JSON",
             url:"/enviocorreo",
             data:"correo="+Dato,
             error: function ()
                     {
                         alert("Ocurrio un error con el envio de correo")
                     },            
-            success: function()
-                    {                       
-                        $("#confirmacion").html("<br><br>Se ha enviado un correo de confirmacion en la cuenta definida"); 
-                    }
+            success: Mensaje
         };
         $.ajax(ajax);//llamo la funcion con JQUERY        
         return false;        
@@ -72,7 +117,7 @@
 	</tr>
         <tr>
             <td>
-                Usuario:
+                Usuario:&nbsp
             </td>
             <td>
                 <input name="usuario" type="text" id="usuario" value="" size="25">
@@ -100,10 +145,10 @@
         </tr>
         <tr>
             <td>
-                Password:
+                <!--Password:-->
             </td>
             <td>
-                <input name="password" type="password" id="password" value="" size="25">
+                <!--<input name="password" type="password" id="password" value="" size="25">-->
             </td>
 	    <td>
             </td>
@@ -116,14 +161,14 @@
             </td>
             <td align="right" >
                 <br>
-                <button id="grabar" style="width:80px;">Enviar</button>
+                <button id="grabar" style="width:80px;" onclick="ValidoCorreos('login')">Enviar</button>
             </td>
 	    <td>
 	    </td>
 	    
 	    <td align="right">
 		<br>
-                <button id="enviarcorreo" style="width:80px;"  onclick="ValidoCorreos()">Enviar</button>
+                <button id="enviarcorreo" style="width:80px;"  onclick="ValidoCorreos('alta')">Enviar</button>
 	    </td>
         </tr>
         </table>
